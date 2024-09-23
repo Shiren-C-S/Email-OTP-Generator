@@ -2,15 +2,11 @@
 
 A new Flutter project.
 
-## Getting Started
+DEMO OF THE APPLICATION
 
-This project is a starting point for a Flutter application.
+https://github.com/user-attachments/assets/e0e183af-315e-4937-9278-216f3bc0ba10
 
-A few resources to get you started if this is your first Flutter project:
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+OTP SENT TO MAIL
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+<img width="556" alt="Generated_OTP" src="https://github.com/user-attachments/assets/cc07678e-d723-45ff-935e-6e57a6f2bdcb">
