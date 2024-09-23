@@ -11,8 +11,8 @@ void main() {
     host: 'smtp.gmail.com',
     emailPort: EmailPort.port587, // TLS
     secureType: SecureType.tls,
-    username: 'drshiran2003@gmail.com',
-    password: 'qshn nwjj yvex inhk', 
+    username: '<"Enter your email here">',
+    password: 'Create your app password and paste it here', 
   );
 
   runApp(const MaterialApp(
