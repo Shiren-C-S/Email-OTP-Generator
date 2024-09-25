@@ -23,7 +23,6 @@ app.config['MAIL_PASSWORD'] = os.environ.get('MAIL_PASSWORD')
 app.config['MAIL_DEFAULT_SENDER'] = os.environ.get('MAIL_DEFAULT_SENDER')
 mail = Mail(app)
 
-# Store OTPs
 otp_store = {}
 
 # OTP expiration time in seconds
@@ -55,8 +54,8 @@ def send_otp():
         # Render the HTML template for the email content
         html_content = render_template('otp_email.html', otp=otp)
 
-        msg.body = f'Your OTP is {otp}. It is valid for 5 minutes.'  # Plain text fallback
-        msg.html = html_content  # HTML version of the email
+        msg.body = f'Your OTP is {otp}. It is valid for 5 minutes.' 
+        msg.html = html_content 
 
         mail.send(msg)
         return jsonify({'message': 'OTP sent successfully'})
