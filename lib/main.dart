@@ -1,26 +1,13 @@
-import 'package:email_otp/email_otp.dart';
 import 'package:flutter/material.dart';
+import 'http_manager.dart';
+import 'const.dart';
 
 void main() {
-  EmailOTP.config(
-    appName: 'OTP_Generator',
-    otpType: OTPType.numeric,
-    emailTheme: EmailTheme.v5,
-  );
-    EmailOTP.setSMTP(
-    host: 'smtp.gmail.com',
-    emailPort: EmailPort.port587, // TLS
-    secureType: SecureType.tls,
-    username: '<"Enter your email here">',
-    password: 'Create your app password and paste it here', 
-  );
-
   runApp(const MaterialApp(
     debugShowCheckedModeBanner: false,
     home: HomePage(),
   ));
 }
-
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -34,44 +21,56 @@ class _HomePageState extends State<HomePage> {
   final TextEditingController otpController = TextEditingController();
   bool isLoading = false;
   bool isOtpSent = false;
+  final httpHandler = HttpHandler(AppConstants.baseUrl);
 
   Future<void> sendOtp() async {
     setState(() {
       isLoading = true;
     });
-    bool result = await EmailOTP.sendOTP(email: emailController.text);
+    final body = {'email': emailController.text};
+    final result = await httpHandler.postRequest(AppConstants.sendOtpEndpoint, body);
     setState(() {
       isLoading = false;
-      isOtpSent = result;
+      isOtpSent = result.isLeft();
     });
-    if (result) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("OTP has been sent")),
-      );
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Failed to send OTP")),
-      );
-    }
+    result.fold(
+      (response) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text(AppConstants.otpSentSuccess)),
+        );
+      },
+      (errorMessage) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(errorMessage)),
+        );
+      },
+    );
   }
 
   Future<void> verifyOtp() async {
     setState(() {
       isLoading = true;
     });
-    bool result = await EmailOTP.verifyOTP(otp: otpController.text);
+    final body = {
+      'email': emailController.text,
+      'otp': otpController.text,
+    };
+    final result = await httpHandler.postRequest(AppConstants.validateOtpEndpoint, body);
     setState(() {
       isLoading = false;
     });
-    if (result) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("OTP verified successfully")),
-      );
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Invalid OTP")),
-      );
-    }
+    result.fold(
+      (response) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text(AppConstants.otpValidationSuccess)),
+        );
+      },
+      (errorMessage) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(errorMessage)),
+        );
+      },
+    );
   }
 
   @override
@@ -121,7 +120,7 @@ class _HomePageState extends State<HomePage> {
                       valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                     )
                   : const Text(
-                      'Send OTP',
+                      AppConstants.sendOtpButton,
                       style: TextStyle(fontSize: 18),
                     ),
             ),
@@ -135,7 +134,7 @@ class _HomePageState extends State<HomePage> {
               TextField(
                 controller: otpController,
                 decoration: InputDecoration(
-                  labelText: 'Enter OTP',
+                  labelText: AppConstants.otpLabel,
                   filled: true,
                   fillColor: Colors.white,
                   border: OutlineInputBorder(
@@ -160,7 +159,7 @@ class _HomePageState extends State<HomePage> {
                         valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                       )
                     : const Text(
-                        'Verify OTP',
+                        AppConstants.validateOtpButton,
                         style: TextStyle(fontSize: 18),
                       ),
               ),
